@@ -18,14 +18,20 @@ LATEST_IMAGE_PATH = os.path.join(SAVE_DIR, "latest.jpg")
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 def download_image():
-    """Downloads the image and updates the latest.jpg file."""
+    """Downloads the image and saves it with a timestamp-based filename."""
     try:
         response = requests.get(IMAGE_URL, stream=True)
         if response.status_code == 200:
-            with open(LATEST_IMAGE_PATH, "wb") as file:
+            # Create a filename with the current date-time
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # Format: YYYY-MM-DD_HH-MM-SS
+            image_path = os.path.join(SAVE_DIR, f"image_{timestamp}.jpg")
+            
+            # Save the image
+            with open(image_path, "wb") as file:
                 for chunk in response.iter_content(1024):
                     file.write(chunk)
-            print(f"Image updated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+            print(f"Image saved: {image_path}")
         else:
             print(f"Failed to download image, status code: {response.status_code}")
     except Exception as e:
@@ -52,6 +58,14 @@ def latest_image():
     return send_from_directory(SAVE_DIR, "latest.jpg", as_attachment=False)
 
 if __name__ == "__main__":
-    # Download image once at start
-    download_image()
+    # Schedule the task every 15 minutes
+    schedule.every(15).minutes.do(download_image)
+
+    print("Image download script running... Press Ctrl+C to stop.")
+    download_image()  # Run once at start
+
+    # Keep the script running
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # Wait 1 minute before checking schedule again
     app.run(debug=True, host="0.0.0.0", port=5001)
