@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Image Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        img {
+            max-width: 80%;
+            height: auto;
+            border: 2px solid #333;
+        }
+    </style>
+    <script>
+        function refreshImage() {
+            const img = document.getElementById("liveImage");
+            const timestamp = new Date().getTime();
+            img.src = "/latest-image?t=" + timestamp;  // Prevents browser caching
+        }
+        setInterval(refreshImage, 15 * 60 * 1000); // Refresh every 15 minutes
+    </script>
+</head>
+<body>
+    <h1>Live Image Viewer</h1>
+    <img id="liveImage" src="/latest-image" alt="Live Image">
+</body>
+</html>
