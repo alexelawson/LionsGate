@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Image Settings
 IMAGE_URL = "https://cache.drivebc.ca/bchighwaycam/pub/cameras/18.jpg"  # Replace with actual image URL
-SAVE_DIR = "static/images"
+SAVE_DIR = "/Users/alexlawson/Documents/GitHub/LionsGate/static/images"
 LATEST_IMAGE_PATH = os.path.join(SAVE_DIR, "latest.jpg")
 
 # Ensure directory exists
